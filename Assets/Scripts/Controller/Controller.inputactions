@@ -1,0 +1,74 @@
+{
+    "name": "Controller",
+    "maps": [
+        {
+            "name": "JoyStick",
+            "id": "8471af76-4304-443c-bb75-fe2a560041b3",
+            "actions": [
+                {
+                    "name": "Horizontal",
+                    "type": "PassThrough",
+                    "id": "fbacbb38-7ec5-4aa2-8b93-cd62d660a3ff",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Up",
+                    "type": "PassThrough",
+                    "id": "2791b9ba-0a40-40c1-9b32-d93379b9043e",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Down",
+                    "type": "PassThrough",
+                    "id": "9680df89-c4d6-4786-b3e9-1cccd8463fc9",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "30347995-4197-41fb-bfc7-76e70b24f181",
+                    "path": "<HID::Logitech Logitech Extreme 3D>/rz",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Horizontal",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "26c22765-d227-4856-a6ce-6ee58fefab70",
+                    "path": "<HID::Logitech Logitech Extreme 3D>/stick/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Up",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2111ecd5-1544-4223-afae-980c2f2d9165",
+                    "path": "<HID::Logitech Logitech Extreme 3D>/stick/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Down",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

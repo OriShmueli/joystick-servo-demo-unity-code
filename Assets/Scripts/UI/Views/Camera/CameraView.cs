@@ -21,19 +21,17 @@ public class CameraView : SideView
                 ViewsManager.ShowView<CameraView>();
             }
         });
-
-
     }
 
     public override void Show()
     {
-        transform.position = new Vector3(300, transform.position.y, 0);
+        transform.position = new Vector3(0, transform.position.y, 0); //x = 300
         base.Show();
     }
 
     public override void Hide()
     {
-        transform.position = new Vector3(-300, transform.position.y, 0);
+        transform.position = new Vector3(-538, transform.position.y, 0);
         base.Hide();
     }
 }

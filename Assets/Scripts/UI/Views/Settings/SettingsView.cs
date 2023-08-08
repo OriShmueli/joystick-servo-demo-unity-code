@@ -130,8 +130,7 @@ public class SettingsView : SideView
     #endregion
 
     private void _chackCameras()
-    {
-        
+    {        
         _camerasDropDown.options.Clear();
         WebCamDevice[] devices = WebCamTexture.devices;
         if(devices.Length > 0)
@@ -236,11 +235,18 @@ public class SettingsView : SideView
             {
                 ConnectionStatus.text = "Connected";
                 ConnectionStatus.color = Color.green;
+                ColorBlock DisconnectedColorBlock = DisconnectButton.colors;
+                DisconnectedColorBlock.normalColor = Color.red;
+                ColorBlock ConnectedColorBlock = ConnectButton.colors;
+                ConnectedColorBlock.normalColor = Color.white;
+                ConnectButton.enabled = false;
+                DisconnectButton.enabled = true;
             }
             else
             {
                 ConnectionStatus.text = "Problem Connecting";
                 ConnectionStatus.color = Color.red;
+
             }                
          }); 
     }
@@ -252,6 +258,12 @@ public class SettingsView : SideView
             {
                 ConnectionStatus.text = "Disconnected";
                 ConnectionStatus.color = Color.black;
+                ColorBlock DisconnectedColorBlock = DisconnectButton.colors;
+                DisconnectedColorBlock.normalColor = Color.white;
+                ColorBlock ConnectedColorBlock = ConnectButton.colors;
+                ConnectedColorBlock.normalColor = Color.green;
+                ConnectButton.enabled = true;
+                DisconnectButton.enabled = false;
             }
             else
             {
@@ -294,16 +306,15 @@ public class SettingsView : SideView
         }
     }
 
-
     public override void Show()
     {
-        transform.position = new Vector3(300, transform.position.y, 0);
+        transform.position = new Vector3(0, transform.position.y, 0); //x =300
         base.Show();
     }
 
     public override void Hide()
     {
-        transform.position = new Vector3(-300, transform.position.y, 0);
+        transform.position = new Vector3(-538, transform.position.y, 0);
         base.Hide();
     }
 }

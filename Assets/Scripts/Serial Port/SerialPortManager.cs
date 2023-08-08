@@ -5,6 +5,7 @@ using System.IO.Ports;
 using System.IO;
 using System.Threading.Tasks;
 using System;
+using System.Text;
 
 public static class SerialPortManager
 {
@@ -40,8 +41,9 @@ public static class SerialPortManager
         )
     {
         //send message
-        char sendFirstHandShake = 'h';
-        byte[] handShakeByteMessage = BitConverter.GetBytes(sendFirstHandShake);
+        _handshakeReaingFlag = true;
+        string sendFirstHandShake = "SYN";
+        byte[] handShakeByteMessage = Encoding.ASCII.GetBytes(sendFirstHandShake);
         await _serialPort.BaseStream?.WriteAsync(handShakeByteMessage, 0, handShakeByteMessage.Length);
 
         //"timer"
@@ -49,13 +51,30 @@ public static class SerialPortManager
         {
             if (_handshakeReaingFlag)
             {
-                return;
+                _timesToSendAgain = 0;
+                break;
             }
 
             await Task.Delay(10);
-            await _readHandshake(_serialPort);
+            string incomingData = await _readHandshake(_serialPort);
 
-            if(_timesToSendAgain >= _maxTimesToSendAgain)
+            switch (incomingData)
+            {
+                case "v":
+                    _timesToSendAgain = 100;
+                    break;
+                case "SYN":
+                    handShakeByteMessage = Encoding.ASCII.GetBytes("ACK");
+                    await _serialPort.BaseStream?.WriteAsync(handShakeByteMessage, 0, handShakeByteMessage.Length); //changin the message to ACT so the timer and error detector will send again ACK
+                    _timesToSendAgain = 0;
+                    _handshakeReaingFlag = false;
+                    break;
+                default:
+                    _timesToSendAgain = 100;
+                    break;
+            }
+
+            if (_timesToSendAgain >= _maxTimesToSendAgain)
             {
                 await _serialPort.BaseStream?.WriteAsync(handShakeByteMessage, 0, handShakeByteMessage.Length);
                 _timesToSendAgain = 0;
@@ -64,30 +83,31 @@ public static class SerialPortManager
         }
     }
 
-    private static async Task _readHandshake(SerialPort serialPort)
+    private static async Task<string> _readHandshake(SerialPort serialPort)
     {
         byte[] buffer = new byte[3]; //17
         var data = await serialPort.BaseStream?.ReadAsync(buffer, 0, buffer.Length);
         var byteArray = new byte[data];
         Array.Copy(buffer, byteArray, data);
-        string s = System.Text.Encoding.UTF8.GetString(byteArray, 0, data);
-        if(buffer.Length > 3 || buffer.Length < 1)
-        {
-            _timesToSendAgain = 100; //reseting the times and casing the code to send another request
-            return;
-        }
+        return System.Text.Encoding.UTF8.GetString(byteArray, 0, data);
+        
+        //if(buffer.Length > 3 || buffer.Length < 1)
+        //{
+        //    _timesToSendAgain = 100; //reseting the times and casing the code to send another request
+        //    return;
+        //}
 
-        if (s == "v") // v - for error
-        {
-            _timesToSendAgain = 100; //reseting the times and casing the code to send another request
-            return;
-        }
+        //if (s == "v") // v - for error
+        //{
+        //    _timesToSendAgain = 100; //reseting the times and casing the code to send another request
+        //    return;
+        //}
 
-        if (s == "h")
-        {
-            _handshakeReaingFlag = true;
-            return;
-        }
+        //if (s == "SYN")
+        //{
+        //    _handshakeReaingFlag = true;
+        //    return;
+        //}
 
        
     }

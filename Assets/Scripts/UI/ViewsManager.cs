@@ -16,19 +16,11 @@ public class ViewsManager : MonoBehaviour
         if(s_instance == null)
         {
             s_instance = this;
-        }        
-    }
+        }
 
-    public static void ShowMenuCanvas()
-    {
-        s_instance.MenuCanvas.gameObject.SetActive(true);
-        s_instance.AppCanvas.gameObject.SetActive(false);
-    }
 
-    public static void ShowApplicationCanvas()
-    {
-        s_instance.MenuCanvas.gameObject.SetActive(false);
-        s_instance.AppCanvas.gameObject.SetActive(true);
+        //s_instance.MenuCanvas.gameObject.SetActive(false);
+        //s_instance.AppCanvas.gameObject.SetActive(true);
 
 
         if (s_instance.Views.Count > 0)
@@ -57,6 +49,17 @@ public class ViewsManager : MonoBehaviour
             }
         }
     }
+
+    public static void ShowMenuCanvas()
+    {
+        s_instance.MenuCanvas.gameObject.SetActive(true);
+        s_instance.AppCanvas.gameObject.SetActive(false);
+    }
+
+    //public static void ShowApplicationCanvas()
+    //{
+        
+    //}
 
     public static void ShowView<T>() where T : View
     {

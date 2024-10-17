@@ -9,66 +9,55 @@ public class TabsSystem : MonoBehaviour
     public List<Tab> Tabs;
     public Color EnabledButtonColor;
     private Tab CurrentTab; //This is all ways set to the first tab. It will be assign to the local one.
+    //[SerializeField] private SettingsSideView_SO _settingsSideView_SO;
+    [SerializeField] private SideView_SO _sideView_SO;
 
     private void OnEnable()
     {
+        _sideView_SO.onInitializeSubPanels += _sideView_SO_onInitializeSubPanels;
+    }
+
+    private void OnDisable()
+    {
+        _sideView_SO.onInitializeSubPanels -= _sideView_SO_onInitializeSubPanels;
+    }
+
+    private void _sideView_SO_onInitializeSubPanels(object sender, System.EventArgs e)
+    {
+
         if (Tabs == null)
         {
             Debug.Log("Error there are no tabs");
             return;
         }
 
-        //for (int i = 0; i < Tabs.Count; i++)
-        //{
-        //    Tabs[i].TabButton.onClick.AddListener(delegate { OnTabEnter(Tabs[i]); });
-        //}
-
         for (int i = 0; i < Tabs.Count; i++)
         {
             Tabs[i].GetComponent<Image>().raycastTarget = false;
             Tabs[i].HideContent();
+            int copy = i;
+            Tabs[i].TabButton.onClick.AddListener(delegate { OnTabEnter(Tabs[copy]); });
         }
 
-        Tabs[0].TabButton.onClick.AddListener(delegate { OnTabEnter(Tabs[0]); });
-        Tabs[1].TabButton.onClick.AddListener(delegate { OnTabEnter(Tabs[1]); });
-        Tabs[2].TabButton.onClick.AddListener(delegate { OnTabEnter(Tabs[2]); });
-
         CurrentTab = Tabs[0];
+        CurrentTab.Init();
         OnTabEnter(Tabs[0]);
-
-        //for (int i = 0; i < TabButton.Count; i++)
-        //{
-        //     _DisableButtonVisual(TabButton[i]);
-        //}
-
-        //_EnableButtonVisual(TabButton[0]);
     }
 
-    private void _disableButtonTabVisual(Button button)
+    private void _disableButtonTabVisual(Button button, Color color)
     {
         button.enabled = false;
-        button.GetComponent<Image>().color = Color.clear;
+        button.GetComponent<Image>().color = color; //Color.clear
     }
 
     private void _enableButtonTabVisual(Button button, Color color)
     {
         button.enabled = true;
-        button.GetComponent<Image>().color = color;
+        button.GetComponent<Image>().color = Color.clear; //color
     }
-
-    //public void Subscribe(Tab tabButton)
-    //{
-    //    if (tabButton == null)
-    //    {
-    //        Tabs = new List<Tab>();
-    //    }
-
-    //    Tabs.Add(tabButton);
-    //}
 
     public void OnTabEnter(Tab tab)
     {
-        
         for (int i = 0; i < Tabs.Count; i++)
         {
             if(Tabs[i] == tab)
@@ -81,8 +70,7 @@ public class TabsSystem : MonoBehaviour
                 CurrentTab = tab;
                 CurrentTab.ShowContent();
                 
-                _disableButtonTabVisual(Tabs[i].TabButton);
-                
+                _disableButtonTabVisual(Tabs[i].TabButton, EnabledButtonColor);                
             }
             else
             {
@@ -91,13 +79,13 @@ public class TabsSystem : MonoBehaviour
         }
     }
 
-    public void OnTabExit(Tab tab)
-    {
+    //public void OnTabExit(Tab tab)
+    //{
 
-    }
+    //}
 
-    public void OnTabSelected(Tab tab)
-    {
+    //public void OnTabSelected(Tab tab)
+    //{
 
-    }
+    //}
 }

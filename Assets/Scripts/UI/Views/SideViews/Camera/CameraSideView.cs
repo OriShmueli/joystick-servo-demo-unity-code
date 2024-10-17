@@ -12,10 +12,18 @@ public class CameraSideView : SideView
     [SerializeField]
     private CameraSideView_SO _cameraSideView_SO;
 
-    private void Start()
+    public override void Init()
     {
+        base.Init();
         _cameraSideView_SO = (CameraSideView_SO)_sideView_SO;
+        _cameraSideView_SO.onRequestCameraRawImage += _cameraSideView_SO_onRequestCameraRawImage;
     }
+
+    private void _cameraSideView_SO_onRequestCameraRawImage(object sender, System.EventArgs e)
+    {
+        _cameraSideView_SO.OnCameraRawImageChanged(rawImage);
+    }
+
 
     //public override void Init()
     //{

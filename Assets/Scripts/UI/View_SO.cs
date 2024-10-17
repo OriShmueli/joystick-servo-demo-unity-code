@@ -18,7 +18,6 @@ public class View_SO : ScriptableObject
     public void TriggerViewHideEvent()
     {
         OnViewHide?.Invoke();
-        
     }
 
     public bool GetViewState()

@@ -15,6 +15,70 @@ public static class SerialPortManager
     private static int _timesToSendAgain = 0;
     private static bool _handshakeReaingFlag = false;
 
+    static byte[] connect = { 0x01 };
+
+    private static Dictionary<SettingsView_Local_SerialPort, SerialPort>
+        _serialPortConnectionsDictionary = new Dictionary<SettingsView_Local_SerialPort, SerialPort>();
+
+    public static void AddNewSerialPortConnection(SettingsView_Local_SerialPort key, string portName, int baudRate)
+    {
+        _serialPortConnectionsDictionary.Add(key, new SerialPort(portName, baudRate, 0, 8, StopBits.One));
+    }
+
+    public static void SetNewSerialPortBaudRate(SettingsView_Local_SerialPort key, int newBaudRate)
+    {
+        _serialPortConnectionsDictionary[key].BaudRate = newBaudRate;
+    }
+
+    public static void SetNewSerialPortName(SettingsView_Local_SerialPort key, string newPortName)
+    {
+        _serialPortConnectionsDictionary[key].PortName = newPortName;
+    }
+
+    public static string GetSerialPortName(SettingsView_Local_SerialPort key)
+    {
+        return _serialPortConnectionsDictionary[key].PortName;
+    }
+
+    public static void Init(SettingsView_Local_SerialPort key)
+    {
+        try
+        {
+
+        }catch(Exception e)
+        {
+
+        }
+    }
+
+    public static async Task<bool> ConnectToSerialPort(SettingsView_Local_SerialPort key)
+    {
+        //return await Task.Run(async () =>
+        //{
+
+        //});
+        SerialPortConsole.ConsoleMessage("Connecting...", key);
+
+        try
+        {
+
+            if (key != null)
+            {
+                _serialPortConnectionsDictionary[key].Open();
+                await HandShake();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch (IOException ex)
+        {
+            return false;
+        }
+    }
+
     public static void init(string portName, int baudRate)
     {
         _serialPort = new SerialPort(portName, baudRate, 0, 8, StopBits.One);

@@ -11,7 +11,7 @@ public class ViewsManager : MonoBehaviour
     public Canvas MenuCanvas;
     public Canvas AppCanvas;
 
-    private void Awake()
+    private void Awake() //awake -> on enable
     {
         if(s_instance == null)
         {
@@ -22,6 +22,7 @@ public class ViewsManager : MonoBehaviour
         //s_instance.MenuCanvas.gameObject.SetActive(false);
         //s_instance.AppCanvas.gameObject.SetActive(true);
 
+        Debug.Log("[ViewManager] TriggerViewShowState(): Show view");
 
         if (s_instance.Views.Count > 0)
         {

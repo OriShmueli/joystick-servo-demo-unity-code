@@ -46,40 +46,48 @@ public class SettingsSideView : SideView
     
     public static Transform showPosition;
 
-    private void Awake()
+    public override void Init()
     {
-        //getting the panel position for the first time. 
-        //TODO: for camera scripts
-        ConnectButton.enabled = false;
-        DisconnectButton.enabled = false;
-        StartCamera.enabled = false;
-        StopCamera.enabled = false;
         
-        //TODO: for camera scripts
-        _camerasDropDown = CamerasDropDown.GetComponent<TMP_Dropdown>();
-        _portsDropDown = PortsDropDown.GetComponent<TMP_Dropdown>();
-        _baudRateDropDown = BaudRateDropDown.GetComponent<TMP_Dropdown>();
+        ////getting the panel position for the first time. 
+        ////TODO: for camera scripts
+        //ConnectButton.enabled = false;
+        //DisconnectButton.enabled = false;
+        //StartCamera.enabled = false;
+        //StopCamera.enabled = false;
 
-        _chackCameras();
+        ////TODO: for camera scripts
+        //_camerasDropDown = CamerasDropDown.GetComponent<TMP_Dropdown>();
+        //_portsDropDown = PortsDropDown.GetComponent<TMP_Dropdown>();
+        //_baudRateDropDown = BaudRateDropDown.GetComponent<TMP_Dropdown>();
 
-        _camerasDropDown.onValueChanged.AddListener(delegate { _onCameraDropDownSelected(_camerasDropDown); });
-        
-        _CheckSerialPort();
+        //_chackCameras(); //TODO: undo this
 
-        _portsDropDown.onValueChanged.AddListener(delegate { _onSerialPortDropDownSelected(_camerasDropDown); });
-        
-        _onBaudRateChanged(_baudRateDropDown);
-        _baudRateDropDown.onValueChanged.AddListener(delegate { _onBaudRateChanged(_baudRateDropDown); });
-        SerialPortManager.init(_serilaPortName, _baudRate);
+        //_camerasDropDown.onValueChanged.AddListener(delegate { _onCameraDropDownSelected(_camerasDropDown); });
 
+        //_CheckSerialPort();
+
+        //_portsDropDown.onValueChanged.AddListener(delegate { _onSerialPortDropDownSelected(_camerasDropDown); });
+
+        //_onBaudRateChanged(_baudRateDropDown);
+        //_baudRateDropDown.onValueChanged.AddListener(delegate { _onBaudRateChanged(_baudRateDropDown); });
+        //SerialPortManager.init(_serilaPortName, _baudRate);
+
+
+        base.Init();
+        //_sideView_SO.InitializeSubComponents();
+        _settingsSideView_SO = (SettingsSideView_SO)_sideView_SO;
+        //_settingsSideView_SO.InitializeSubComponents();
     }
-    
 
     #region events
     private void OnEnable()
     {
-        _settingsSideView_SO = (SettingsSideView_SO)_sideView_SO; //somehow works
-        Usb.DevicesChanged += Usb_DevicesChanged;
+        //somehow works
+        //_settingsSideView_SO = (SettingsSideView_SO)_sideView_SO; //working
+        //Usb.DevicesChanged += Usb_DevicesChanged; //undo if not woriking
+
+
         //delete? 01/11/2023
         //HideButton.onClick.AddListener(delegate { _hideOrShowPanelComponents(false); });
         //ShowButton.onClick.AddListener(delegate { _hideOrShowPanelComponents(true); });
@@ -93,6 +101,7 @@ public class SettingsSideView : SideView
     //    }
     //}
 
+    
     private void Usb_DevicesChanged(UsbDevice[] devices)
     {
         //if(_camTexture != null)
@@ -124,8 +133,7 @@ public class SettingsSideView : SideView
                     {
                         currentDeviceDisconnected = true;
                     }
-                }
-                
+                }                
             }
            
             if(currentDeviceDisconnected)
@@ -167,7 +175,10 @@ public class SettingsSideView : SideView
             _camTexture.deviceName = devices[0].name;
             _currentDevice = devices[0].name;
             //StartCamera.enabled = true;
-            _startVideoStream(_camTexture);
+           
+           _startVideoStream(_camTexture);
+           
+            
             StopCamera.enabled = true;
         }
         else
@@ -310,7 +321,14 @@ public class SettingsSideView : SideView
             StopCamera.enabled = true;
             StartCamera.enabled = false;
             rawImage.texture = webCamTexture;
-            webCamTexture.Play();
+            try
+            {
+                webCamTexture.Play();
+            }catch (Exception ex)
+            {
+                Debug.Log(ex.Message);
+            }
+            
         }
         else
         {

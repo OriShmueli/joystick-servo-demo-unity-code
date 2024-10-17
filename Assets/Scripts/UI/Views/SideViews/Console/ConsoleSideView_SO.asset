@@ -12,3 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3466073d5437dfa48a8e1b6073db62e6, type: 3}
   m_Name: ConsoleSideView_SO
   m_EditorClassIdentifier: 
+  name: 
+  error: {r: 0.95686275, g: 0.2627451, b: 0.21176471, a: 1}
+  green: {r: 0.29803923, g: 0.6862745, b: 0.3137255, a: 1}
+  yellow: {r: 1, g: 0.92156863, b: 0.23137255, a: 1}
+  normal: {r: 1, g: 1, b: 1, a: 1}
+  warning: {r: 0.54509807, g: 0, b: 0, a: 0.85882354}

@@ -18,7 +18,7 @@ public class SideView : View
     [SerializeField]
     private bool IsSideViewShown = false;
 
-    [SerializeField]
+    //[SerializeField]
     protected SideView_SO _sideView_SO;
 
     //private void OnEnable()
@@ -67,6 +67,7 @@ public class SideView : View
         //No need for this. ViewManager calling the show of all classes
         ShowButton.onClick.AddListener(Show); //Show();
         HideButton.onClick.AddListener(Hide); //Hide(); //This also works but for all of them: ViewsManager.HideView<SideView>();
+        _sideView_SO.InitializeSubComponents();
     }
 
     public override void Show() //Show is called first on the awake (awake befor enable)
@@ -103,6 +104,7 @@ public class SideView : View
 
     public override void Hide()
     {
+        Debug.Log("[Side View] Hide(): hiding view");
         GetComponent<CanvasGroup>().alpha = 0f;
         GetComponent<CanvasGroup>().blocksRaycasts = false;
         IsSideViewShown = false;

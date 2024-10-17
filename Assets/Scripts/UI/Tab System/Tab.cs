@@ -8,6 +8,11 @@ public class Tab : MonoBehaviour
     public Button TabButton;
     //public List<CanvasGroup> UIComponenets;
 
+    public virtual void Init()
+    {
+
+    }
+
     public virtual void HideContent()
     {
         GetComponent<CanvasGroup>().alpha = 0f;

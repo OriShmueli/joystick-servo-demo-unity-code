@@ -22,7 +22,7 @@ public abstract class View : MonoBehaviour
         return IsViewActivated;
     }
 
-    public abstract void Init();
+    public abstract void Init(); //awake -> (befor enable)
 
     public virtual void Hide()
     {
@@ -40,6 +40,7 @@ public abstract class View : MonoBehaviour
 
     public void TriggerViewShowState()
     {
+        Debug.Log("[View] TriggerViewShowState(): Show view");
         view_SO.TriggerViewShowEvent();
         IsViewActivated = true;
         Show();

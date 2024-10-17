@@ -13,6 +13,13 @@ public class SideView_SO : View_SO
     public event Action OnSideViewShow_RequestEvent;
     public event Action OnSideViewHide_RequestEvent;
 
+    public event EventHandler onInitializeSubPanels;
+
+    public void InitializeSubComponents()
+    {
+        onInitializeSubPanels?.Invoke(this, EventArgs.Empty);
+    }
+
     public void TriggerSideViewShowEvent()
     {
         OnSideViewShow?.Invoke();

@@ -90,6 +90,34 @@ public partial class @Controller: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Computer"",
+            ""id"": ""466e0f63-9e50-483b-baf7-fe33b0bb9475"",
+            ""actions"": [
+                {
+                    ""name"": ""Interaction"",
+                    ""type"": ""Button"",
+                    ""id"": ""e2c949d4-89e4-4f1e-b7a4-482b5f154008"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""ad7c6817-4253-4820-8f1f-54476ccc35d0"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interaction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -99,6 +127,9 @@ public partial class @Controller: IInputActionCollection2, IDisposable
         m_JoyStick_Horizontal = m_JoyStick.FindAction("Horizontal", throwIfNotFound: true);
         m_JoyStick_Up = m_JoyStick.FindAction("Up", throwIfNotFound: true);
         m_JoyStick_Down = m_JoyStick.FindAction("Down", throwIfNotFound: true);
+        // Computer
+        m_Computer = asset.FindActionMap("Computer", throwIfNotFound: true);
+        m_Computer_Interaction = m_Computer.FindAction("Interaction", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -218,10 +249,60 @@ public partial class @Controller: IInputActionCollection2, IDisposable
         }
     }
     public JoyStickActions @JoyStick => new JoyStickActions(this);
+
+    // Computer
+    private readonly InputActionMap m_Computer;
+    private List<IComputerActions> m_ComputerActionsCallbackInterfaces = new List<IComputerActions>();
+    private readonly InputAction m_Computer_Interaction;
+    public struct ComputerActions
+    {
+        private @Controller m_Wrapper;
+        public ComputerActions(@Controller wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Interaction => m_Wrapper.m_Computer_Interaction;
+        public InputActionMap Get() { return m_Wrapper.m_Computer; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(ComputerActions set) { return set.Get(); }
+        public void AddCallbacks(IComputerActions instance)
+        {
+            if (instance == null || m_Wrapper.m_ComputerActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_ComputerActionsCallbackInterfaces.Add(instance);
+            @Interaction.started += instance.OnInteraction;
+            @Interaction.performed += instance.OnInteraction;
+            @Interaction.canceled += instance.OnInteraction;
+        }
+
+        private void UnregisterCallbacks(IComputerActions instance)
+        {
+            @Interaction.started -= instance.OnInteraction;
+            @Interaction.performed -= instance.OnInteraction;
+            @Interaction.canceled -= instance.OnInteraction;
+        }
+
+        public void RemoveCallbacks(IComputerActions instance)
+        {
+            if (m_Wrapper.m_ComputerActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IComputerActions instance)
+        {
+            foreach (var item in m_Wrapper.m_ComputerActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_ComputerActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public ComputerActions @Computer => new ComputerActions(this);
     public interface IJoyStickActions
     {
         void OnHorizontal(InputAction.CallbackContext context);
         void OnUp(InputAction.CallbackContext context);
         void OnDown(InputAction.CallbackContext context);
+    }
+    public interface IComputerActions
+    {
+        void OnInteraction(InputAction.CallbackContext context);
     }
 }

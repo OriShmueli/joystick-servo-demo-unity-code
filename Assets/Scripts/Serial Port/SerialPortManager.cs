@@ -9,7 +9,7 @@ using System.Text;
 
 public static class SerialPortManager
 {
-    private static SerialPort _serialPort;
+    private static SerialPort _serialPort; //not relevent
     private static int _handShakeTime = 10;
     private static int _maxTimesToSendAgain = 100;
     private static int _timesToSendAgain = 0;
@@ -45,7 +45,7 @@ public static class SerialPortManager
         try
         {
 
-        }catch(Exception e)
+        } catch (Exception e)
         {
 
         }
@@ -65,7 +65,8 @@ public static class SerialPortManager
             if (key != null)
             {
                 _serialPortConnectionsDictionary[key].Open();
-                await HandShake();
+                
+                //await HandShake(key);
                 return true;
             }
             else
@@ -79,11 +80,14 @@ public static class SerialPortManager
         }
     }
 
+    
+
     public static void init(string portName, int baudRate)
     {
         _serialPort = new SerialPort(portName, baudRate, 0, 8, StopBits.One);
     }
 
+    //?
     public static async Task<bool> ConnectToSerialPort()
     {
         return await Task.Run(async () =>
@@ -101,6 +105,59 @@ public static class SerialPortManager
         });
     }
 
+    public static void a(byte[] b)
+    {
+
+    }
+
+    public static async Task HandShake(SettingsView_Local_SerialPort key)
+    {
+        //a(new byte[]{ 0x01 });
+
+        byte[] pack = {  }; //start byte - 0x01; 
+                            //size byte - (256 is enough) 
+                            //data bytes
+                            //crc byte
+                            //
+                            //end byte - 0x02
+
+        byte[] SYN = { 0x16 };
+        byte[] ACK = { 0x06 };
+        byte[] SYNACK = { 0x1c };
+
+        
+        //8x5=40 pixels in lcd
+
+        //! Adding a parity bit to flags
+
+        //client(pc) is the one initiating the communication.
+        //client(pc)        server(arduino)
+        //  |                     |
+        //  |  ->      SYN    ->  |
+        //  |                     |
+        //  |  <-    SYN+ACK  <-  | openning timer to get ACK back
+        //  |                     | if not send again ACK. 
+        //  |  ->      ACK    ->  |
+        //pc and arduino openning timers if 1 sec if pc get SYN+ACK again send ACK again.  
+
+
+        //corrupted pack send once -> timer activated -> recived valid response that the func successfully applied. 
+        //                             /         \          |              
+        //                            /           \         |--|
+        //              no response send again.    \        |  |
+        //                                      bad response request last response                                        
+
+
+        try
+        {
+            await _serialPortConnectionsDictionary[key].BaseStream?.WriteAsync(connect, 0, connect.Length);
+        }catch (Exception ex)
+        {
+            SerialPortConsole.ConsoleErrorMessage(ex.Message, key);
+            Debug.LogError(ex.Message);
+        }
+    }
+
     private static async Task HandShake( //delegate here...
         )
     {
@@ -108,6 +165,7 @@ public static class SerialPortManager
         _handshakeReaingFlag = true;
         string sendFirstHandShake = "SYN";
         byte[] handShakeByteMessage = Encoding.ASCII.GetBytes(sendFirstHandShake);
+        //TODO: what serial port. specify -> _serialPortConnectionsDictionary[key].Open();
         await _serialPort.BaseStream?.WriteAsync(handShakeByteMessage, 0, handShakeByteMessage.Length);
 
         //"timer"
@@ -147,6 +205,7 @@ public static class SerialPortManager
         }
     }
 
+    //Old Handshake
     private static async Task<string> _readHandshake(SerialPort serialPort)
     {
         byte[] buffer = new byte[3]; //17
@@ -172,8 +231,6 @@ public static class SerialPortManager
         //    _handshakeReaingFlag = true;
         //    return;
         //}
-
-       
     }
 
     public static async Task<bool> DisconnectFromSerialPort()
@@ -205,7 +262,6 @@ public static class SerialPortManager
 
     static async Task read(SerialPort serialPort)
     {
-
         byte[] buffer = new byte[27]; //17
         var data = await serialPort.BaseStream?.ReadAsync(buffer, 0, buffer.Length);
         var byteArray = new byte[data];
@@ -215,9 +271,7 @@ public static class SerialPortManager
         {
             Console.WriteLine("return");
             return;
-
-        }
-        
+        }        
     }
 
     static async Task write(SerialPort serialPort)

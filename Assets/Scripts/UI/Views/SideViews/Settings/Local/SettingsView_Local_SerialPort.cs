@@ -71,7 +71,7 @@ public class SettingsView_Local_SerialPort : MonoBehaviour
         });
 
         _disconnectButton.interactable = false;
-
+        
         _connectButton.onClick.AddListener(_connectToSerialPortButton);
         _disconnectButton.onClick.AddListener(_disconnectFromSerialPortButton);
         
@@ -91,6 +91,7 @@ public class SettingsView_Local_SerialPort : MonoBehaviour
             _connectionStatusText.text = "Connected";
             _connectionStatusText.color = _connectedColor;
             _disconnectButton.interactable = true;
+            SerialPortConsole.ConsoleSuccessMessage("Connected to PORT: " + SerialPortManager.GetSerialPortName(this), this);
         }
         else
         {
@@ -106,5 +107,10 @@ public class SettingsView_Local_SerialPort : MonoBehaviour
     private void _disconnectFromSerialPortButton()
     {
 
+    }
+
+    private void OnDisable()
+    {
+        
     }
 }

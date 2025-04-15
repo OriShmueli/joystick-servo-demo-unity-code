@@ -18,7 +18,7 @@ public class WriteToConsole
     public ConsoleColor consoleColor { get; set; }
 }
 
-public static class ConsoleWriteEvent //write to all
+public static class ConsoleWriteEvent //write to all console (bluetooth, serial port, server)
 {
     public static event EventHandler<WriteToConsole> OnWriteToConsole;
     public static event EventHandler<List<SettingsView_Local_SerialPort>> OnInitConsole;
@@ -48,7 +48,7 @@ public class SerialPortConsoleMessage : WriteToConsole
     public SettingsView_Local_SerialPort id { get; set; }
 }
 
-public static class SerialPortConsole
+public static class SerialPortConsole //based on serial port ID.
 {
     public static event EventHandler<SerialPortConsoleMessage> OnWriteToConsole;
     public static void ConsoleMessage(string newMessage, ConsoleColor newConsoleColor, SettingsView_Local_SerialPort id)
@@ -57,13 +57,22 @@ public static class SerialPortConsole
         writeToConsole.message = newMessage;
         writeToConsole.consoleColor = newConsoleColor;
         writeToConsole.id = id;
-
         OnWriteToConsole?.Invoke(null, writeToConsole);
     }
 
     public static void ConsoleMessage(string newMessage, SettingsView_Local_SerialPort id)
     {
         ConsoleMessage(newMessage, ConsoleColor.Normal, id);
+    }
+
+    public static void ConsoleErrorMessage(string newMessage, SettingsView_Local_SerialPort id)
+    {
+        ConsoleMessage(newMessage, ConsoleColor.Error, id);
+    }
+
+    public static void ConsoleSuccessMessage(string newMessage, SettingsView_Local_SerialPort id)
+    {
+        ConsoleMessage(newMessage, ConsoleColor.Green, id);
     }
 }
 
